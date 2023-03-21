@@ -20,9 +20,6 @@ function call(lines: number[]): WinningCombinationsResult {
     // Se não tiver elemento, para aqui
     if (!elem) {
       return false;
-      // Se o elemento for igual a "0" - coringa, retorna True
-    } else if (elem == 0) {
-      return true;
 
       // Caso o elemento esteja incluido nos símbolos de pagamento, retorna True
     } else {
@@ -53,11 +50,19 @@ function call(lines: number[]): WinningCombinationsResult {
       (elem == array[indice + 4] && array[indice + 3] == 0) ||
       elem == array[indice + 3]
     ) {
-      let auxResult: [number, number[]] = [
-        elem,
-        [indice, indice + 1, indice + 2, indice + 3, indice + 4],
-      ];
-      result.push(auxResult);
+      if (array[indice + 4] == undefined) {
+        let auxResult: [number, number[]] = [
+          elem,
+          [indice, indice + 1, indice + 2, indice + 3],
+        ];
+        result.push(auxResult);
+      } else {
+        let auxResult: [number, number[]] = [
+          elem,
+          [indice, indice + 1, indice + 2, indice + 3, indice + 4],
+        ];
+        result.push(auxResult);
+      }
     } else if (array[indice + 3] == 0 || elem == array[indice + 3]) {
       let auxResult: [number, number[]] = [
         elem,
@@ -73,14 +78,32 @@ function call(lines: number[]): WinningCombinationsResult {
     }
   }
 
+  // Pendente - Concluir as validações do 0!
+  function validAllZero(array: number[]) {
+    let initialValue = 0;
+    const sumWithInitial = array.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      initialValue
+    );
+    if (initialValue == 0) {
+      return result;
+    }
+  }
+
   // Percorrendo o array de lines e chamando as funções feitas anteriormente.
   lines.forEach((elem, index) => {
+    // Valida se o simbolo é um tipo "válido"
     const symbolValid = validateSymbol(elem, symbolsPayment);
 
+    // Se for do tipo válido, irá realizar a contagem para encontrar 3 ou mais elementos repetidos (considerando o coringa)
     if (symbolValid) {
       const findSymbol = symbolCount(elem, index, lines);
       if (findSymbol) {
-        resultPrepar(elem, index, lines);
+        // validação para se no percorrer do array for encontrado algum pagamento, não repetir 2x o mesmo pagamento
+        // com o mesmo símbolo
+        if (result[0] == undefined || result[0][0] !== elem) {
+          resultPrepar(elem, index, lines);
+        }
       }
     }
   });
