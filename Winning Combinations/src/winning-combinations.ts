@@ -36,14 +36,14 @@ function call(lines: number[]): WinningCombinationsResult {
     // Primeira validação o próximo item do array tem que ser igual ao elemento ou coringa
     if (elem == array[indice + 1] || array[indice + 1] == 0) {
       countSymbol++;
-      // Segunda validação depois de 2 casas o item do array tem que ser igual ao elemento ou coringa
-      if (elem == array[indice + 2] || array[indice + 2] == 0) {
-        countSymbol++;
-        return true;
-      }
     } else {
       return false;
     }
+    // Segunda validação depois de 2 casas o item do array tem que ser igual ao elemento ou coringa
+    if (elem == array[indice + 2] || array[indice + 2] == 0) {
+      countSymbol++;
+    }
+    return countSymbol >= 2;
   }
 
   // Função para prerar o resultado caso o "countSymbol" for maior que 2, isto é, encontrar 3 na sequência
@@ -53,13 +53,23 @@ function call(lines: number[]): WinningCombinationsResult {
       (elem == array[indice + 4] && array[indice + 3] == 0) ||
       elem == array[indice + 3]
     ) {
-      result = [
-        [elem, [indice, indice + 1, indice + 2, indice + 3, indice + 4]],
+      let auxResult: [number, number[]] = [
+        elem,
+        [indice, indice + 1, indice + 2, indice + 3, indice + 4],
       ];
+      result.push(auxResult);
     } else if (array[indice + 3] == 0 || elem == array[indice + 3]) {
-      result = [[elem, [indice, indice + 1, indice + 2, indice + 3]]];
+      let auxResult: [number, number[]] = [
+        elem,
+        [indice, indice + 1, indice + 2, indice + 3],
+      ];
+      result.push(auxResult);
     } else {
-      result = [[elem, [indice, indice + 1, indice + 2]]];
+      let auxResult: [number, number[]] = [
+        elem,
+        [indice, indice + 1, indice + 2],
+      ];
+      result.push(auxResult);
     }
   }
 
@@ -71,8 +81,6 @@ function call(lines: number[]): WinningCombinationsResult {
       const findSymbol = symbolCount(elem, index, lines);
       if (findSymbol) {
         resultPrepar(elem, index, lines);
-        // result = [[elem, [index, index + 1, index + 2]]];
-        return result;
       }
     }
   });
