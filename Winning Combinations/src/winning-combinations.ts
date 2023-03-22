@@ -27,6 +27,17 @@ function call(lines: number[]): WinningCombinationsResult {
     }
   }
 
+  function validateZero(elem: number) {
+    // Se não tiver elemento, para aqui
+    if (elem == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function resultPreparZero(elem: number, indice: number, array: number[]) {}
+
   // Função para realizar a contagem de sequência de simbolos, aonde se for maior que 2 retorna True e se for menor, retorna False
   function symbolCount(elem: number, indice: number, array: number[]) {
     countSymbol = 0;
@@ -85,13 +96,30 @@ function call(lines: number[]): WinningCombinationsResult {
       (accumulator, currentValue) => accumulator + currentValue,
       initialValue
     );
-    if (initialValue == 0) {
-      return result;
+    if (sumWithInitial == 0) {
+      return true;
+    } else {
+      return false;
     }
   }
 
   // Percorrendo o array de lines e chamando as funções feitas anteriormente.
   lines.forEach((elem, index) => {
+    // Validação do simbolo iniciando em Zero
+    const symbolZero = validateZero(elem);
+
+    if (symbolZero) {
+      const allZero = validAllZero(lines);
+
+      if (allZero) {
+        result = [[0, [0, 1, 2, 3, 4]]];
+        console.log(result);
+        return result;
+      } else {
+        resultPreparZero(elem, index, lines);
+      }
+    }
+
     // Valida se o simbolo é um tipo "válido"
     const symbolValid = validateSymbol(elem, symbolsPayment);
 
